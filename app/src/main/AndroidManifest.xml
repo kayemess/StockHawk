@@ -23,6 +23,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.StockDetail"
+            android:parentActivityName=".ui.MainActivity"/>
+
         <service
             android:name=".sync.QuoteIntentService"
             android:exported="false" />
