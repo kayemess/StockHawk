@@ -75,6 +75,14 @@ public final class QuoteSyncJob {
                 Stock stock = quotes.get(symbol);
                 StockQuote quote = stock.getQuote();
 
+                // check to see if the quote is valid, if it's not valid getPrice will be null
+                // and the invalid quote symbol will be removed from sharedPreferences and from quotes map
+                if(quote.getPrice() == null){
+                    PrefUtils.removeStock(context,symbol);
+                    quotes.remove(symbol);
+                    break;
+                }
+
                 float price = quote.getPrice().floatValue();
                 float change = quote.getChange().floatValue();
                 float percentChange = quote.getChangeInPercent().floatValue();
