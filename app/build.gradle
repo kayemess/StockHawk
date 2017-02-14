@@ -10,9 +10,12 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
 
+    aaptOptions.cruncherEnabled = false
+    aaptOptions.useNewCruncher = false
+
     defaultConfig {
         applicationId "com.udacity.stockhawk"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
