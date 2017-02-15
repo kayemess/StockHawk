@@ -3,6 +3,8 @@ package com.udacity.stockhawk.sync;
 import android.app.IntentService;
 import android.content.Intent;
 
+import com.udacity.stockhawk.data.Contract;
+
 import timber.log.Timber;
 
 
@@ -15,6 +17,10 @@ public class QuoteIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Timber.d("Intent handled");
-        QuoteSyncJob.getQuotes(getApplicationContext());
+        String stockSymbol = null;
+        if(intent.hasExtra(Contract.Quote.COLUMN_SYMBOL)){
+            stockSymbol = intent.getStringExtra(Contract.Quote.COLUMN_SYMBOL);
+        }
+        QuoteSyncJob.getQuotes(getApplicationContext(), stockSymbol);
     }
 }

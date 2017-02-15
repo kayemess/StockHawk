@@ -7,14 +7,18 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.Nullable;
 
+import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,7 +27,9 @@ import java.util.Map;
 import java.util.Set;
 
 import timber.log.Timber;
+
 import com.udacity.stockhawk.widget.StockWidgetProvider;
+
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 import yahoofinance.histquotes.HistoricalQuote;
@@ -42,31 +48,55 @@ public final class QuoteSyncJob {
     private QuoteSyncJob() {
     }
 
-    static void getQuotes(Context context) {
+    static void getQuotes(Context context, @Nullable String stockSymbol) {
 
         Timber.d("Running sync job");
+
+        Cursor savedStocks;
+        String[] stockArray;
+        Set<String> stockCopy = new HashSet<>();
+        Set<String> addedStocks = new HashSet<>();
 
         Calendar from = Calendar.getInstance();
         Calendar to = Calendar.getInstance();
         from.add(Calendar.YEAR, -YEARS_OF_HISTORY);
 
         try {
+            // Check to see if getQuotes request was for a single stock, or all in DB
+            // If for all stocks, query DB
+            if (stockSymbol == null) {
+                savedStocks = context.getContentResolver().query(Contract.Quote.URI, null, null, null, null);
+                // If DB is empty, load default stocks from shared preferences
+                if (savedStocks == null || !savedStocks.moveToPosition(0)) {
+                    addedStocks = PrefUtils.getStocks(context);
+                    stockArray = addedStocks.toArray(new String[addedStocks.size()]);
 
-            Set<String> stockPref = PrefUtils.getStocks(context);
-            Set<String> stockCopy = new HashSet<>();
-            stockCopy.addAll(stockPref);
-            String[] stockArray = stockPref.toArray(new String[stockPref.size()]);
-
-            Timber.d(stockCopy.toString());
+                }
+                // Otherwise, populate HashSet w/ stocks from DB
+                else {
+                    stockArray = new String[savedStocks.getCount()];
+                    for (int i = 0; i < savedStocks.getCount(); i++) {
+                        savedStocks.moveToPosition(i);
+                        stockArray[i] = savedStocks.getString(Contract.Quote.POSITION_SYMBOL);
+                    }
+                    addedStocks = new HashSet<>(Arrays.asList(stockArray));
+                }
+            }
+            // Otherwise, if for a single stock, populate HashSet with single stock
+            else {
+                stockArray = new String[]{stockSymbol};
+                addedStocks.addAll(Arrays.asList(stockArray));
+            }
 
             if (stockArray.length == 0) {
                 return;
             }
 
             Map<String, Stock> quotes = YahooFinance.get(stockArray);
-            Iterator<String> iterator = stockCopy.iterator();
 
-            Timber.d(quotes.toString());
+            // copy HashSet to use for iterating
+            stockCopy.addAll(addedStocks);
+            Iterator<String> iterator = stockCopy.iterator();
 
             ArrayList<ContentValues> quoteCVs = new ArrayList<>();
 
@@ -79,8 +109,8 @@ public final class QuoteSyncJob {
 
                 // check to see if the quote is valid, if it's not valid getPrice will be null
                 // and the invalid quote symbol will be removed from sharedPreferences and from quotes map
-                if(quote.getPrice() == null){
-                    PrefUtils.removeStock(context,symbol);
+                if (quote.getPrice() == null) {
+                    //PrefUtils.removeStock(context,symbol);
                     quotes.remove(symbol);
                     break;
                 }
@@ -153,17 +183,20 @@ public final class QuoteSyncJob {
     public static synchronized void initialize(final Context context) {
 
         schedulePeriodic(context);
-        syncImmediately(context);
+        syncImmediately(context, null);
 
     }
 
-    public static synchronized void syncImmediately(Context context) {
+    public static synchronized void syncImmediately(Context context, @Nullable String stockSymbol) {
 
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
             Intent nowIntent = new Intent(context, QuoteIntentService.class);
+            if (stockSymbol != null) {
+                nowIntent.putExtra(Contract.Quote.COLUMN_SYMBOL, stockSymbol);
+            }
             context.startService(nowIntent);
         } else {
 
@@ -181,6 +214,5 @@ public final class QuoteSyncJob {
 
         }
     }
-
 
 }

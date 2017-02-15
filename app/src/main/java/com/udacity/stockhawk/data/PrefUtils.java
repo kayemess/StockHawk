@@ -2,9 +2,12 @@ package com.udacity.stockhawk.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.preference.PreferenceManager;
+import android.widget.AdapterView;
 
 import com.udacity.stockhawk.R;
+import com.udacity.stockhawk.sync.QuoteSyncJob;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -36,7 +39,7 @@ public final class PrefUtils {
         return prefs.getStringSet(stocksKey, new HashSet<String>());
 
     }
-
+/*
     private static void editStockPref(Context context, String symbol, Boolean add) {
         String key = context.getString(R.string.pref_stocks_key);
         Set<String> stocks = getStocks(context);
@@ -59,7 +62,7 @@ public final class PrefUtils {
 
     public static void removeStock(Context context, String symbol) {
         editStockPref(context, symbol, false);
-    }
+    }*/
 
     public static String getDisplayMode(Context context) {
         String key = context.getString(R.string.pref_display_mode_key);
