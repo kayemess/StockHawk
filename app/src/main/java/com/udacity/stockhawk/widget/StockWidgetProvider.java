@@ -2,6 +2,7 @@ package com.udacity.stockhawk.widget;
 
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
@@ -16,6 +17,7 @@ import com.udacity.stockhawk.sync.QuoteSyncJob;
 import com.udacity.stockhawk.ui.MainActivity;
 import com.udacity.stockhawk.ui.StockDetail;
 
+
 /**
  * Created by kristenwoodward on 2/8/17.
  */
@@ -28,8 +30,13 @@ public class StockWidgetProvider extends AppWidgetProvider {
 
         for (int appWidgetId : appWidgetIds) {
 
-            // instantiate remote views for app widget layout
+            // Instantiate remote views for app widget layout
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.stock_widget);
+
+            // Create an intent to launch MainActivity when user clicks on widget title
+            Intent openMainActivity = new Intent(context,MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context,0,openMainActivity,0);
+            views.setOnClickPendingIntent(R.id.widget_title,pendingIntent);
 
             // Set up collection (based on SDK)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -38,8 +45,22 @@ public class StockWidgetProvider extends AppWidgetProvider {
                 setRemoteAdapterV11(context, views);
             }
 
-            // set up empty view, to be shown when no stock data is available
+            // Set up empty view, to be shown when no stock data is available.
+            // Empty view is a sister view of the collection ListView
             views.setEmptyView(R.id.widget_list, R.id.widget_empty);
+
+            // From documentation...
+            // This section makes it possible for items to have individualized behavior.
+            // It does this by setting up a pending intent template. Individual items of a collection
+            // cannot set up their own pending intents. Instead, the collection as a whole sets
+            // up a pending intent template, and the individual items set a fillInIntent
+            // to create unique behavior on an item-by-item basis.
+            Intent clickIntentTemplate = new Intent(context,StockDetail.class);
+
+            PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
+                    .addNextIntentWithParentStack(clickIntentTemplate)
+                    .getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setPendingIntentTemplate(R.id.widget_list,clickPendingIntentTemplate);
 
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
