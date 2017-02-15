@@ -69,7 +69,10 @@ public class StockWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
-        if (QuoteSyncJob.ACTION_DATA_UPDATED.equals(intent.getAction())) {
+        // Widget was not updating when stocks were added/removed even though super was called above
+        // Including "android.appwidget.action.APPWIDGET_UPDATE" in if statement below fixed the issue
+        if (QuoteSyncJob.ACTION_DATA_UPDATED.equals(intent.getAction()) ||
+                "android.appwidget.action.APPWIDGET_UPDATE".equals(intent.getAction())) {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
                     new ComponentName(context, getClass()));

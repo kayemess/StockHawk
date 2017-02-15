@@ -34,6 +34,6 @@
 
 
     <!-- String constants to be used for bundles, comparisons -->
-    <string name="CONST_INTENT_EXTRAS">intentExtras</string>
+    <string name="CONST_INTENT_EXTRAS" translatable="false">intentExtras</string>
 
 </resources>
