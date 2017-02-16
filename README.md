@@ -1,11 +1,14 @@
 # Stock Hawk
 
-This is the starter code for project 3 in Udacity's [Android Developer Nanodegree](https://www.udacity.com/course/android-developer-nanodegree-by-google--nd801). 
+Find and track performance of your favorite stocks. This app leverages the Yahoo Finance API and shows stock performance as either % or $. Click into a specific stock to see historical performance. Includes a details widget so you can easily see performance of your followed stocks.
 
-Check out Udacity's [Advanced Android App Development](https://www.udacity.com/course/advanced-android-app-development--ud855) course to get the skills you'll need to complete this project!
+This app was completed for the third project in Udacity's Android Nanodegree program. The intent of this project was to diagnose and resolve issues in order to make the app production ready.
 
-If you're a Nanodegree student check your work againt the project [rubric](https://review.udacity.com/#!/rubrics/140/view), then click [here](https://classroom.udacity.com/nanodegrees/nd801/parts/8011345406/project) to submit your project.
+# Pre-requisites
 
-# Contrubuting
+Android SDK v23
+Android Build Tools v25.0.2
 
-Pull requests gratefully accepted.
+# Getting Started
+
+This project uses the Gradle build system. To build this project, use the "gradlew build" command or use "Import Project" in Android Studio.
