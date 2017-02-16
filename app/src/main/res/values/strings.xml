@@ -33,4 +33,13 @@
     <string name="toast_stock_added_no_connectivity">Symbol %s added. Will refresh when network available.</string>
     <string name="toast_no_connectivity">Will refresh when network available.</string>
 
+    <string name="label_for_stock_history_chart">Stock Close Prices</string>
+    <string name="label_on_chart">%s closing prices</string>
+
+    <!-- Content Descriptions for buttons, etc-->
+    <string name="content_description_add_new_stock">Add a new stock symbol</string>
+    <string name="content_description_history_of_stock">Chart of closing prices for %s</string>
+    <string name="content_description_percentage">Change display mode to percentage</string>
+    <string name="content_description_absolute">Change display mode to absolute</string>
+
 </resources>

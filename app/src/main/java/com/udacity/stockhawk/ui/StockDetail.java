@@ -51,6 +51,7 @@ public class StockDetail extends AppCompatActivity {
             }
             if(intentExtras.getString(Contract.Quote.COLUMN_HISTORY,"") != ""){
                 LineChart stockChart = (LineChart) findViewById(R.id.chart);
+                stockChart.setContentDescription(getString(R.string.content_description_history_of_stock,mStockSymbol));
                 List<Entry> stockDataEntries = new ArrayList<>();
 
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("M/d/yy");
@@ -75,7 +76,6 @@ public class StockDetail extends AppCompatActivity {
                     Date date = new Date(dateInMillis);
 
                     String dateString = simpleDateFormat.format(date);
-                    Timber.d("date ",dateString);
                     datesForXAxis[i] = dateString;
 
                     Float stockClose = Float.valueOf(oneDayOfStockData[STOCK_CLOSE_POSITION]);
@@ -84,7 +84,7 @@ public class StockDetail extends AppCompatActivity {
                     i++;
                 }
 
-                LineDataSet stockDataSet = new LineDataSet(stockDataEntries, "Stock Close Prices");
+                LineDataSet stockDataSet = new LineDataSet(stockDataEntries, getString(R.string.label_for_stock_history_chart));
                 stockDataSet.setColor(R.color.colorAccent);
 
                 LineData stockData = new LineData(stockDataSet);
@@ -105,7 +105,7 @@ public class StockDetail extends AppCompatActivity {
 
                 // set description on chart
                 Description chartDescription = new Description();
-                chartDescription.setText(mStockSymbol + " closing prices");
+                chartDescription.setText(getString(R.string.label_on_chart,mStockSymbol));
                 stockChart.setDescription(chartDescription);
 
                 Legend legend = stockChart.getLegend();

@@ -31,4 +31,5 @@
         android:text="No stock information available"
         android:textAppearance="?android:textAppearanceLarge" />
 
+    
 </LinearLayout>
