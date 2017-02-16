@@ -4,6 +4,10 @@ Find and track performance of your favorite stocks. This app leverages the Yahoo
 
 This app was completed for the third project in Udacity's Android Nanodegree program. The intent of this project was to diagnose and resolve issues in order to make the app production ready.
 
+<img src="https://github.com/kayemess/StockHawk/blob/master/stock_hawk.png" alt="StockHawk Screenshot" width="280">
+<img src="https://github.com/kayemess/StockHawk/blob/master/add_stock.png" alt="Add a new stock" width="280">
+<img src="https://github.com/kayemess/StockHawk/blob/master/stock_hawk_widget.png" alt="StockHawk Widget" width="280">
+
 # Pre-requisites
 
 Android SDK v23
